@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Pharma</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Admin</string>
+    <string name="action_signout">Sign Out</string>
+
+    <string name="menu_all">All</string>
+    <string name="menu_notifications">Notifications</string>
+</resources>
