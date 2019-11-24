@@ -1,5 +1,6 @@
 package com.pharma.android.ui.all;
 
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -9,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +24,6 @@ import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.pharma.android.MainActivity;
 import com.pharma.android.ObjectBox;
@@ -31,6 +32,8 @@ import com.pharma.android.models.MedicalItem;
 
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.joda.time.Period;
+import org.joda.time.PeriodType;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -126,7 +129,10 @@ public class MedicalItemFragment extends Fragment {
                             adapter.setMedicalItems(medicalItemBox.getAll());
                             adapter.notifyDataSetChanged();
 
-                            NotifyUser(newMedicalItem);
+                            DateTime expireDate = new DateTime(newMedicalItem.getExpireDate());
+                            int notificationTime = new Period(DateTime.now(), expireDate.minusDays(7), PeriodType.millis()).getValue(0);
+                            scheduleNotification(getNotification(newMedicalItem), notificationTime);
+
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
@@ -137,7 +143,21 @@ public class MedicalItemFragment extends Fragment {
         });
     }
 
-    private void NotifyUser(MedicalItem newMedicalItem) {
+
+    private void scheduleNotification(Notification notification, int delay) {
+
+        Intent notificationIntent = new Intent(getContext(), NotificationPublisher.class);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 1);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        long futureInMillis = SystemClock.elapsedRealtime() + delay;
+        AlarmManager alarmManager = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
+    }
+
+    private Notification getNotification(MedicalItem newMedicalItem) {
+
         NotificationManager mNotificationManager;
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(getContext().getApplicationContext(), "notify_001");
@@ -150,28 +170,23 @@ public class MedicalItemFragment extends Fragment {
         bigText.setSummaryText("Item Expiring Soon");
 
         mBuilder.setContentIntent(pendingIntent);
-        mBuilder.setContentTitle("An Item is Expiring in 7 days");
-        mBuilder.setContentText(newMedicalItem.getName() + " is expiring in a week");
+        mBuilder.setContentTitle("An Item With " + newMedicalItem.getQuantity() + " Quantity is Expiring in a Week");
+        mBuilder.setContentText(newMedicalItem.getName() + " is expiring.");
         mBuilder.setSmallIcon(R.drawable.ic_notifications_active_black_24dp);
         mBuilder.setContentIntent(pendingIntent);
         mBuilder.setPriority(Notification.PRIORITY_MAX);
         mBuilder.setStyle(bigText);
 
-        mNotificationManager =
-                (NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
-
-// === Removed some obsoletes
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             String channelId = "Your_channel_id";
             NotificationChannel channel = new NotificationChannel(
                     channelId,
-                    "Channel human readable title",
+                    "Notification Channel",
                     NotificationManager.IMPORTANCE_DEFAULT);
-            mNotificationManager.createNotificationChannel(channel);
             mBuilder.setChannelId(channelId);
         }
 
-        mNotificationManager.notify(0, mBuilder.build());
+        return mBuilder.build();
     }
 
     @Override
@@ -190,7 +205,6 @@ public class MedicalItemFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
-
 
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name

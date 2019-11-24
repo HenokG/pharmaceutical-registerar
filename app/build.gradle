@@ -39,4 +39,5 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
 
     implementation 'net.danlew:android.joda:2.10.3'
+    implementation 'com.github.jakebonk:NotifyMe:1.0.1'
 }
