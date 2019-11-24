@@ -10,6 +10,7 @@
             android:title="@string/menu_all" />
         <item
             android:id="@+id/nav_notifications"
+            android:visible="false"
             android:icon="@drawable/ic_notifications_active_black_24dp"
             android:title="@string/menu_notifications" />
     </group>

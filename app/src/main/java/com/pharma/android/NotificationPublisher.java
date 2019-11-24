@@ -1,4 +1,4 @@
-package com.pharma.android.ui.all;
+package com.pharma.android;
 
 import android.app.Notification;
 import android.app.NotificationChannel;

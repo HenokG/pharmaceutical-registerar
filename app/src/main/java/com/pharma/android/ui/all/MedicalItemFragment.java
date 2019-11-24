@@ -24,8 +24,10 @@ import androidx.core.app.NotificationCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.pharma.android.MainActivity;
+import com.pharma.android.NotificationPublisher;
 import com.pharma.android.ObjectBox;
 import com.pharma.android.R;
 import com.pharma.android.models.MedicalItem;
@@ -129,9 +131,7 @@ public class MedicalItemFragment extends Fragment {
                             adapter.setMedicalItems(medicalItemBox.getAll());
                             adapter.notifyDataSetChanged();
 
-                            DateTime expireDate = new DateTime(newMedicalItem.getExpireDate());
-                            int notificationTime = new Period(DateTime.now(), expireDate.minusDays(7), PeriodType.millis()).getValue(0);
-                            scheduleNotification(getNotification(newMedicalItem), notificationTime);
+                            scheduleNotification(getNotification(newMedicalItem), newMedicalItem);
 
                         } catch (ParseException e) {
                             e.printStackTrace();
@@ -141,10 +141,16 @@ public class MedicalItemFragment extends Fragment {
             });
 
         });
+        for (MedicalItem medicalItem :
+                medicalItemBox.getAll()) {
+            scheduleNotification(getNotification(medicalItem), medicalItem);
+        }
     }
 
 
-    private void scheduleNotification(Notification notification, int delay) {
+    private void scheduleNotification(Notification notification, MedicalItem medicalItem) {
+        DateTime expireDate = new DateTime(medicalItem.getExpireDate());
+        int delay = new Period(DateTime.now(), expireDate.minusDays(7), PeriodType.millis()).getValue(0);
 
         Intent notificationIntent = new Intent(getContext(), NotificationPublisher.class);
         notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 1);
@@ -152,7 +158,7 @@ public class MedicalItemFragment extends Fragment {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         long futureInMillis = SystemClock.elapsedRealtime() + delay;
-        AlarmManager alarmManager = (AlarmManager)getActivity().getSystemService(Context.ALARM_SERVICE);
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
     }
 

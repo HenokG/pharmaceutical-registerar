@@ -22,7 +22,6 @@ public class MyMedicalItemRecyclerViewAdapter extends RecyclerView.Adapter<MyMed
     private final OnListFragmentInteractionListener mListener;
 
     public MyMedicalItemRecyclerViewAdapter(List<MedicalItem> items, OnListFragmentInteractionListener listener) {
-        System.out.println("medapp: " + items.size());
         medicalItems = items;
         mListener = listener;
     }
@@ -46,15 +45,8 @@ public class MyMedicalItemRecyclerViewAdapter extends RecyclerView.Adapter<MyMed
 
         holder.itemDaysLeftToExpire.setText("( " + daysLeftToExpire.getDays() + " days ) ");
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.medicalItem);
-                }
-            }
+        holder.mView.setOnClickListener(v -> {
+            System.out.println("medapp + " + position);
         });
     }
 

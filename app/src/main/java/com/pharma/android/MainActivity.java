@@ -35,6 +35,7 @@ import io.objectbox.Box;
 public class MainActivity extends AppCompatActivity implements MedicalItemFragment.OnListFragmentInteractionListener {
 
     private AppBarConfiguration mAppBarConfiguration;
+    private Box<MedicalItem> medicalItemBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
