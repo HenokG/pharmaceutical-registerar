@@ -4,29 +4,29 @@
   "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
   "entities": [
     {
-      "id": "2:2504949203472755497",
-      "lastPropertyId": "4:8942308352762831809",
-      "name": "MedicalItem",
+      "id": "1:4417968025026017052",
+      "lastPropertyId": "4:8478134141177049031",
+      "name": "Med",
       "properties": [
         {
-          "id": "1:8340065314232597003",
+          "id": "1:6775550979604496698",
           "name": "id",
           "type": 6,
           "flags": 1
         },
         {
-          "id": "2:1094372300526774362",
+          "id": "2:8046862802864153603",
           "name": "name",
           "type": 9
         },
         {
-          "id": "3:5844365204481926857",
+          "id": "3:322759649745538898",
           "name": "quantity",
           "type": 5,
           "flags": 4
         },
         {
-          "id": "4:8942308352762831809",
+          "id": "4:8478134141177049031",
           "name": "expireDate",
           "type": 10
         }
@@ -34,22 +34,15 @@
       "relations": []
     }
   ],
-  "lastEntityId": "2:2504949203472755497",
+  "lastEntityId": "1:4417968025026017052",
   "lastIndexId": "0:0",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,
   "modelVersionParserMinimum": 5,
-  "retiredEntityUids": [
-    4417968025026017052
-  ],
+  "retiredEntityUids": [],
   "retiredIndexUids": [],
-  "retiredPropertyUids": [
-    6775550979604496698,
-    8046862802864153603,
-    322759649745538898,
-    8478134141177049031
-  ],
+  "retiredPropertyUids": [],
   "retiredRelationUids": [],
   "version": 1
 }

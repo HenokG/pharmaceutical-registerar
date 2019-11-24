@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/nav_all"
-        android:name="com.pharma.android.ui.all.AllFragments"
+        android:name="com.pharma.android.ui.all.MedicalItemFragment"
         android:label="@string/menu_all"
         tools:layout="@layout/fragment_home" />
 

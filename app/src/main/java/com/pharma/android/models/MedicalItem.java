@@ -1,12 +1,14 @@
 package com.pharma.android.models;
 
+import java.text.DateFormat;
+import java.text.Format;
 import java.util.Date;
 
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 
 @Entity
-public class Med {
+public class MedicalItem {
 
     @Id
     private long id;
@@ -14,14 +16,14 @@ public class Med {
     private int quantity;
     private Date expireDate;
 
-    public Med(String name, int quantity, Date expireDate) {
+    public MedicalItem(String name, int quantity, Date expireDate) {
         this.name = name;
         this.quantity = quantity;
         this.expireDate = expireDate;
     }
 
     public long getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(long id) {
@@ -29,7 +31,7 @@ public class Med {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
@@ -37,7 +39,7 @@ public class Med {
     }
 
     public int getQuantity() {
-        return quantity;
+        return this.quantity;
     }
 
     public void setQuantity(int quantity) {
@@ -45,7 +47,12 @@ public class Med {
     }
 
     public Date getExpireDate() {
-        return expireDate;
+        return this.expireDate;
+    }
+
+    public String getExpireDateString() {
+        Format formatter = DateFormat.getDateInstance();
+        return String.valueOf(formatter.format(this.expireDate));
     }
 
     public void setExpireDate(Date expireDate) {
