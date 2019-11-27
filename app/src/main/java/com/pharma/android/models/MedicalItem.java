@@ -16,6 +16,9 @@ public class MedicalItem {
     private int quantity;
     private Date expireDate;
 
+    public MedicalItem() {
+    }
+
     public MedicalItem(String name, int quantity, Date expireDate) {
         this.name = name;
         this.quantity = quantity;

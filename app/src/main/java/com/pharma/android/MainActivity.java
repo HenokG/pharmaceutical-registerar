@@ -1,16 +1,8 @@
 package com.pharma.android;
 
-import android.app.DatePickerDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -19,23 +11,11 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-import com.pharma.android.models.MedicalItem;
-import com.pharma.android.ui.all.MedicalItemFragment;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-
-import io.objectbox.Box;
-
-public class MainActivity extends AppCompatActivity implements MedicalItemFragment.OnListFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
-    private Box<MedicalItem> medicalItemBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,10 +49,5 @@ public class MainActivity extends AppCompatActivity implements MedicalItemFragme
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
-    }
-
-    @Override
-    public void onListFragmentInteraction(MedicalItem medicalItem) {
-        System.out.println("med clicked");
     }
 }

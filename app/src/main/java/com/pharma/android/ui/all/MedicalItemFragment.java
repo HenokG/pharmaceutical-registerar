@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -33,9 +34,8 @@ import com.pharma.android.R;
 import com.pharma.android.models.MedicalItem;
 
 import org.joda.time.DateTime;
+import org.joda.time.Interval;
 import org.joda.time.LocalDate;
-import org.joda.time.Period;
-import org.joda.time.PeriodType;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -44,7 +44,6 @@ import io.objectbox.Box;
 
 public class MedicalItemFragment extends Fragment {
 
-    private OnListFragmentInteractionListener mListener;
     private DatePickerDialog picker;
     private MyMedicalItemRecyclerViewAdapter adapter;
     private Box<MedicalItem> medicalItemBox;
@@ -65,7 +64,7 @@ public class MedicalItemFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         medicalItemBox = ObjectBox.get().boxFor(MedicalItem.class);
-        adapter = new MyMedicalItemRecyclerViewAdapter(medicalItemBox.getAll(), mListener);
+        adapter = new MyMedicalItemRecyclerViewAdapter(medicalItemBox.getAll());
         recyclerView.setAdapter(adapter);
         return view;
     }
@@ -75,14 +74,18 @@ public class MedicalItemFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         FloatingActionButton fab = getView().findViewById(R.id.fab);
         fab.setOnClickListener(view12 -> {
-            //TODO: SHOW dialog
             LayoutInflater li = LayoutInflater.from(getContext());
-            View promptsView = li.inflate(R.layout.add_medical_item_dialog, null);
+            View promptsView = li.inflate(R.layout.medical_item_dialog, null);
 
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                     getContext());
 
             alertDialogBuilder.setView(promptsView);
+
+            final TextView dialogTitle = promptsView
+                    .findViewById(R.id.dialog_title);
+
+            dialogTitle.setText("Add Medical Item");
 
             final EditText inputName = promptsView
                     .findViewById(R.id.input_name);
@@ -126,7 +129,7 @@ public class MedicalItemFragment extends Fragment {
                                     new SimpleDateFormat("dd/MM/yyyy").parse(inputExpireDate.getText().toString()));
                             medicalItemBox.put(newMedicalItem);
                             alertDialog.dismiss();
-                            Toast.makeText(getContext(), "New Item Added", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "New Item Added!", Toast.LENGTH_SHORT).show();
                             // update UI
                             adapter.setMedicalItems(medicalItemBox.getAll());
                             adapter.notifyDataSetChanged();
@@ -147,17 +150,20 @@ public class MedicalItemFragment extends Fragment {
         }
     }
 
-
     private void scheduleNotification(Notification notification, MedicalItem medicalItem) {
         DateTime expireDate = new DateTime(medicalItem.getExpireDate());
-        int delay = new Period(DateTime.now(), expireDate.minusDays(7), PeriodType.millis()).getValue(0);
+
+        DateTime weekBeforeExpireDate = expireDate.minusDays(7);
+        if (weekBeforeExpireDate.isBeforeNow()) return;
+
+        Interval delay = new Interval(DateTime.now(), weekBeforeExpireDate);
+        long futureInMillis = SystemClock.elapsedRealtime() + delay.toDurationMillis();
 
         Intent notificationIntent = new Intent(getContext(), NotificationPublisher.class);
         notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 1);
         notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        long futureInMillis = SystemClock.elapsedRealtime() + delay;
         AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, pendingIntent);
     }
@@ -193,27 +199,5 @@ public class MedicalItemFragment extends Fragment {
         }
 
         return mBuilder.build();
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onListFragmentInteraction(MedicalItem medicalItem);
     }
 }
