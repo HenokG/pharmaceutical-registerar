@@ -39,6 +39,7 @@ import org.joda.time.LocalDate;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 import io.objectbox.Box;
 
@@ -64,8 +65,12 @@ public class MedicalItemFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         medicalItemBox = ObjectBox.get().boxFor(MedicalItem.class);
-        adapter = new MyMedicalItemRecyclerViewAdapter(medicalItemBox.getAll());
+        List<MedicalItem> medicalItems = medicalItemBox.getAll();
+        adapter = new MyMedicalItemRecyclerViewAdapter(medicalItems);
         recyclerView.setAdapter(adapter);
+        // hide instruction based on number of items
+        View instructions = view.findViewById(R.id.instructions);
+        instructions.setVisibility(medicalItems.size() > 0 ? View.GONE : View.VISIBLE);
         return view;
     }
 

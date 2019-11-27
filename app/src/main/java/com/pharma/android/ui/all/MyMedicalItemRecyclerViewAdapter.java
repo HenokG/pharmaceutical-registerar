@@ -27,7 +27,7 @@ public class MyMedicalItemRecyclerViewAdapter extends RecyclerView.Adapter<MyMed
     private List<MedicalItem> medicalItems;
     private Box<MedicalItem> medicalItemBox;
 
-    public MyMedicalItemRecyclerViewAdapter(List<MedicalItem> items) {
+    MyMedicalItemRecyclerViewAdapter(List<MedicalItem> items) {
         // we are doing some manipulations on the list so
         // we rather do it in one place for the sake of D.R.Y
         this.setMedicalItems(items);
@@ -142,21 +142,21 @@ public class MyMedicalItemRecyclerViewAdapter extends RecyclerView.Adapter<MyMed
         return medicalItems.size();
     }
 
-    public void setMedicalItems(List<MedicalItem> medicalItems) {
+    void setMedicalItems(List<MedicalItem> medicalItems) {
         this.medicalItems = medicalItems;
         // reverse list to cause a desc sort of items
         Collections.reverse(this.medicalItems);
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public final View mView;
-        public final TextView itemNumber;
-        public final TextView itemName;
-        public final TextView itemExpirationDate;
-        public final TextView itemDaysLeftToExpire;
-        public MedicalItem medicalItem;
+    class ViewHolder extends RecyclerView.ViewHolder {
+        final View mView;
+        final TextView itemNumber;
+        final TextView itemName;
+        final TextView itemExpirationDate;
+        final TextView itemDaysLeftToExpire;
+        MedicalItem medicalItem;
 
-        public ViewHolder(View view) {
+        ViewHolder(View view) {
             super(view);
             mView = view;
             itemNumber = view.findViewById(R.id.item_number);
